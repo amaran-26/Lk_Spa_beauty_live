@@ -25,6 +25,100 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init({
+                publicKey: "7iWc7ozyj_AT6zUHX",
+            });
+        })();
+    </script>
+    <script type="text/javascript">
+        // Initialize EmailJS with your public key
+        (function() {
+            emailjs.init({
+                publicKey: "7iWc7ozyj_AT6zUHX",
+            });
+        })();
+        
+        function sendMail(event) {
+            // Prevent form submission and page refresh
+            if (event) event.preventDefault();
+            
+            console.log("sendMail function called");
+            
+            // Basic validation
+            const name = document.getElementById("name");
+            const email = document.getElementById("email");
+            const booking_date = document.getElementById("booking_date");
+            const booking_time = document.getElementById("booking_time");
+            const service = document.getElementById("service");
+            
+            let isValid = true;
+            
+            // Reset error messages
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            
+            // Validate each field
+            if (!name.value) {
+                document.getElementById('name-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!email.value || !email.value.includes('@')) {
+                document.getElementById('email-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!booking_date.value) {
+                document.getElementById('date-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!booking_time.value) {
+                document.getElementById('time-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!service.value) {
+                document.getElementById('service-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                return false;
+            }
+            
+            // Prepare parameters for EmailJS
+            let parms = {
+                name: name.value,
+                email: email.value,
+                booking_date: booking_date.value,
+                booking_time: booking_time.value,
+                service: service.options[service.selectedIndex].text,
+            }
+            
+            console.log("Sending email with parameters:", parms);
+            
+            // Send email using EmailJS
+            emailjs.send("service_meiebva", "template_5aokivz", parms)
+                .then(function(response) {
+                    console.log("SUCCESS!", response.status, response.text);
+                    
+                    // Show success message
+                    document.getElementById('success-message').style.display = 'block';
+                    
+                    // Reset form
+                    document.getElementById('booking-form').reset();
+                }, function(error) {
+                    console.log("FAILED...", error);
+                    alert("Failed to send booking. Please try again later.");
+                });
+                
+            return false;
+        }
+    </script>
 </head>
 
 <body>
@@ -33,7 +127,7 @@
         <div class="row py-2 px-lg-5">
             <div class="col-lg-6 text-left mb-2 mb-lg-0">
                 <div class="d-inline-flex align-items-center">
-                    <small><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</small>
+                    <small><i class="fa fa-phone-alt mr-2"></i>+6282341426767</small>
                     <small class="px-3">|</small>
                     <small><i class="fa fa-envelope mr-2"></i>info@example.com</small>
                 </div>
@@ -105,9 +199,36 @@
                 <li data-target="#header-carousel" data-slide-to="0" class="active"></li>
                 <li data-target="#header-carousel" data-slide-to="1"></li>
                 <li data-target="#header-carousel" data-slide-to="2"></li>
+                <li data-target="#header-carousel" data-slide-to="3"></li>
+                <li data-target="#header-carousel" data-slide-to="4"></li>
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item position-relative active" style="min-height: 100vh;">
+                    <video class="position-absolute w-100 h-100" autoplay muted loop style="object-fit: cover;">
+                        <source src="img/carousel-video-1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <div class="p-3" style="max-width: 900px;">
+                            <h6 class="text-white text-uppercase mb-3 animate__animated animate__fadeInDown" style="letter-spacing: 3px;">Spa & Beauty Center</h6>
+                            <h3 class="display-3 text-capitalize text-white mb-3">Relaxing Video Experience</h3>
+                            <p class="mx-md-5 px-5">Immerse yourself in our tranquil spa atmosphere with this relaxing video experience</p>
+                            <a class="btn btn-outline-light py-3 px-4 mt-3 animate__animated animate__fadeInUp" href="#">Make Appointment</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item position-relative" style="min-height: 100vh;">
+                    <img class="position-absolute w-100 h-100" src="img/carousel-4.jpg" style="object-fit: cover;">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <div class="p-3" style="max-width: 900px;">
+                            <h6 class="text-white text-uppercase mb-3 animate__animated animate__fadeInDown" style="letter-spacing: 3px;">Spa & Beauty Center</h6>
+                            <h3 class="display-3 text-capitalize text-white mb-3">Premium Spa Experience</h3>
+                            <p class="mx-md-5 px-5">Experience luxury and tranquility with our premium spa treatments and services</p>
+                            <a class="btn btn-outline-light py-3 px-4 mt-3 animate__animated animate__fadeInUp" href="#">Make Appointment</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item position-relative" style="min-height: 100vh;">
                     <img class="position-absolute w-100 h-100" src="img/carousel-1.jpg" style="object-fit: cover;">
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
@@ -436,16 +557,18 @@
             <div class="col-lg-6 py-5">
                 <div class="p-5 my-5" style="background: rgba(33, 30, 28, 0.7);">
                     <h1 class="text-white text-center mb-4">Make Appointment</h1>
-                    <form>
+                    <form id="booking-form" onsubmit="sendMail(event)">
                         <div class="form-row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <input type="text" class="form-control bg-transparent p-4" placeholder="Your Name" required="required" />
+                                    <input type="text" id="name" class="form-control bg-transparent p-4" placeholder="Your Name" required>
+                                    <!-- <div id="name-error" class="error-message">Please enter your name</div> -->
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <input type="email" class="form-control bg-transparent p-4" placeholder="Your Email" required="required" />
+                                    <input type="email" id="email" class="form-control bg-transparent p-4" placeholder="Your Email" required>
+                                    <!-- <div id="email-error" class="error-message">Please enter a valid email</div> -->
                                 </div>
                             </div>
                         </div>
@@ -453,14 +576,17 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <div class="date" id="date" data-target-input="nearest">
-                                        <input type="text" class="form-control bg-transparent p-4 datetimepicker-input" placeholder="Select Date" data-target="#date" data-toggle="datetimepicker"/>
+                                        <input type="text" id="booking_date"class="form-control bg-transparent p-4 datetimepicker-input" placeholder="Select Date" data-target="#date" data-toggle="datetimepicker"/>
+                                        <!-- <input type="date" id="booking_date" class="form-control p-3" required> -->
+                                        <!-- <div id="date-error" class="error-message">Please select a date</div> -->
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <div class="time" id="time" data-target-input="nearest">
-                                        <input type="text" class="form-control bg-transparent p-4 datetimepicker-input" placeholder="Select Time" data-target="#time" data-toggle="datetimepicker"/>
+                                        <input type="text" id="booking_time" class="form-control bg-transparent p-4 datetimepicker-input" placeholder="Select Time" data-target="#time" data-toggle="datetimepicker"/>
+                                        <!-- <div id="time-error" class="error-message">Please select a time</div> -->
                                     </div>
                                 </div>
                             </div>
@@ -468,17 +594,23 @@
                         <div class="form-row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <select class="custom-select bg-transparent px-4" style="height: 47px;">
-                                        <option selected>Select A Service</option>
-                                        <option value="1">Service 1</option>
-                                        <option value="2">Service 1</option>
-                                        <option value="3">Service 1</option>
+                                    <select class="custom-select bg-transparent px-4" style="height: 47px;" id="service" required>
+                                        <option value="">Select A Service</option>
+                                        <option value="1">Hair Cutting & Styling</option>
+                                        <option value="2">Hair Coloring</option>
+                                        <option value="3">Skin Care Treatment</option>
+                                        <option value="4">Makeup & Beauty</option>
+                                        <option value="5">Massage Therapy</option>
                                     </select>
+                                    <!-- <div id="service-error" class="error-message">Please select a service</div> -->
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <button class="btn btn-primary btn-block" type="submit" style="height: 47px;">Make Appointment</button>
                             </div>
+                        </div>
+                        <div id="success-message" class="alert alert-success mt-3" style="display: none;">
+                            Thank you! Your appointment request has been sent.
                         </div>
                     </form>
                 </div>
@@ -492,9 +624,12 @@
     <div class="container-fluid py-5">
         <div class="container py-5">
             <div class="row">
-                <div class="col-lg-6" style="min-height: 500px;">
+                <div class="col-lg-6" style="min-height: 700px;">
                     <div class="position-relative h-100">
-                        <img class="position-absolute w-100 h-100" src="img/opening.jpg" style="object-fit: cover;">
+                        <!-- <img class="position-absolute w-100 h-100" src="img/opening.jpg" style="object-fit: cover;"> -->
+                        <video class="position-absolute w-100" autoplay muted loop style="object-fit: cover;height: 700px;">
+                            <source src="img/spa_zone_video.mp4" type="video/mp4">
+                        </video>
                     </div>
                 </div>
                 <div class="col-lg-6 pt-5 pb-lg-5">
@@ -744,8 +879,11 @@
                         </h1>
                     </a>
                     <p>Aliquyam sed elitr elitr erat sed diam ipsum eirmod eos lorem nonumy. Tempor sea ipsum diam  sed clita dolore eos dolores magna erat dolore sed stet justo et dolor.</p>
-                    <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
-                    <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
+                    <p><i class="fa fa-map-marker-alt mr-2"></i>Jalan pulau singkep
+                        Gang star futsal no 43
+                        Denpasar Selatan,
+                        Bali, Indonesia</p>
+                    <p><i class="fa fa-phone-alt mr-2"></i>+6282341426767</p>
                     <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
                     <div class="d-flex justify-content-start mt-4">
                         <a class="btn btn-lg btn-primary btn-lg-square mr-2" href="#"><i class="fab fa-twitter"></i></a>

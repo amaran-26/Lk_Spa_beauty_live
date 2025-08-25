@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Form Fix</title>
+    
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 800px;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .form-control, .custom-select {
+            border: 2px solid #e1e5ee;
+            border-radius: 8px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-control:focus, .custom-select:focus {
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 0.25rem rgba(75, 108, 183, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .success-message {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4b6cb7;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+        
+        .instructions h5 {
+            color: #4b6cb7;
+            margin-top: 0;
+        }
+        
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .feature-list li i {
+            color: #4b6cb7;
+            position: absolute;
+            left: 0;
+            top: 2px;
+        }
+    </style>
+    
+    <script type="text/javascript">
+        // Initialize EmailJS with your public key
+        (function() {
+            emailjs.init({
+                publicKey: "7iWc7ozyj_AT6zUHX",
+            });
+        })();
+        
+        function sendMail(event) {
+            // Prevent form submission and page refresh
+            if (event) event.preventDefault();
+            
+            console.log("sendMail function called");
+            
+            // Basic validation
+            const name = document.getElementById("name");
+            const email = document.getElementById("email");
+            const booking_date = document.getElementById("booking_date");
+            const booking_time = document.getElementById("booking_time");
+            const service = document.getElementById("service");
+            
+            let isValid = true;
+            
+            // Reset error messages
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            
+            // Validate each field
+            if (!name.value) {
+                document.getElementById('name-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!email.value || !email.value.includes('@')) {
+                document.getElementById('email-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!booking_date.value) {
+                document.getElementById('date-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!booking_time.value) {
+                document.getElementById('time-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!service.value) {
+                document.getElementById('service-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                return false;
+            }
+            
+            // Prepare parameters for EmailJS
+            let parms = {
+                name: name.value,
+                email: email.value,
+                booking_date: booking_date.value,
+                booking_time: booking_time.value,
+                service: service.options[service.selectedIndex].text,
+            }
+            
+            console.log("Sending email with parameters:", parms);
+            
+            // Send email using EmailJS
+            emailjs.send("service_meiebva", "template_5aokivz", parms)
+                .then(function(response) {
+                    console.log("SUCCESS!", response.status, response.text);
+                    
+                    // Show success message
+                    document.getElementById('success-message').style.display = 'block';
+                    
+                    // Reset form
+                    document.getElementById('booking-form').reset();
+                }, function(error) {
+                    console.log("FAILED...", error);
+                    alert("Failed to send booking. Please try again later.");
+                });
+                
+            return false;
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calendar-check me-2"></i>Appointment Booking</h1>
+            <p>Book your service with us easily</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="instructions">
+                <h5><i class="fas fa-info-circle me-2"></i>Important Instructions</h5>
+                <p>For this form to work properly with EmailJS, make sure you have:</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i>Created a service in EmailJS with ID "service_meiebva"</li>
+                    <li><i class="fas fa-check-circle"></i>Created a template with ID "template_5aokivz"</li>
+                    <li><i class="fas fa-check-circle"></i>Added your EmailJS public key in the code</li>
+                    <li><i class="fas fa-check-circle"></i>Included the EmailJS SDK in your project</li>
+                </ul>
+            </div>
+            
+            <form id="booking-form">
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" id="name" class="form-control p-3" placeholder="Your Name" required>
+                            <div id="name-error" class="error-message">Please enter your name</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="email" class="form-label">Your Email</label>
+                            <input type="email" id="email" class="form-control p-3" placeholder="Your Email" required>
+                            <div id="email-error" class="error-message">Please enter a valid email</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <div class="form-group">
+                            <label for="booking_date" class="form-label">Select Date</label>
+                            <input type="date" id="booking_date" class="form-control p-3" required>
+                            <div id="date-error" class="error-message">Please select a date</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="booking_time" class="form-label">Select Time</label>
+                            <input type="time" id="booking_time" class="form-control p-3" required>
+                            <div id="time-error" class="error-message">Please select a time</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <div class="form-group">
+                            <label for="service" class="form-label">Select Service</label>
+                            <select class="form-select p-3" id="service" required>
+                                <option value="">Select A Service</option>
+                                <option value="1">Hair Cutting & Styling</option>
+                                <option value="2">Hair Coloring</option>
+                                <option value="3">Skin Care Treatment</option>
+                                <option value="4">Makeup & Beauty</option>
+                                <option value="5">Massage Therapy</option>
+                            </select>
+                            <div id="service-error" class="error-message">Please select a service</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <button class="btn btn-primary w-100 p-3" type="submit">
+                            <i class="fas fa-paper-plane me-2"></i>Make Appointmenttt
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+            <div id="success-message" class="success-message">
+                <i class="fas fa-check-circle me-2"></i>Your appointment has been booked successfully! We've sent a confirmation to your email.
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Add form submission handler
+        document.getElementById('booking-form').addEventListener('submit', sendMail);
+        
+        // Add real-time validation
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('blur', function() {
+                if (this.value) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
